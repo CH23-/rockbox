@@ -45,6 +45,12 @@ static int vol_tenthdb2hw(int db)
     return (db / 10) & HPACTL_HPAVOL_MASK;
 }
 
+static int vol_tenthdb2hw2(int db2)
+{
+    if (db2 <= -600) return LINEACTL_LINEAMUTE;
+    return (db2 / 10) & LINEACTL_LINEAVOL_MASK;
+}
+
 static void cscodec_setbits(int reg, unsigned char off, unsigned char on)
 {
     unsigned char data = (cscodec_read(reg) & ~off) | on;
@@ -125,14 +131,14 @@ void audiohw_set_volume(int vol_l, int vol_r)
                     vol_r << HPBCTL_HPBVOL_SHIFT);
 }
 
-void audiohw_set_lineout_volume(int vol_l, int vol_r)
+void audiohw_set_lineout_volume(int vol_l2, int vol_r2)
 {
-    vol_l = vol_tenthdb2hw(vol_l);
-    vol_r = vol_tenthdb2hw(vol_r);
+    vol_l2 = vol_tenthdb2hw(vol_l2);
+    vol_r2 = vol_tenthdb2hw(vol_r2);
     cscodec_setbits(LINEACTL, LINEACTL_LINEAVOL_MASK | LINEACTL_LINEAMUTE,
-                    vol_l << LINEACTL_LINEAVOL_SHIFT);
+                    vol_l2 << LINEACTL_LINEAVOL_SHIFT);
     cscodec_setbits(LINEBCTL, LINEBCTL_LINEBVOL_MASK | LINEBCTL_LINEBMUTE,
-                    vol_r << LINEBCTL_LINEBVOL_SHIFT);
+                    vol_r2 << LINEBCTL_LINEBVOL_SHIFT);
 }
 
 void audiohw_enable_lineout(bool enable)

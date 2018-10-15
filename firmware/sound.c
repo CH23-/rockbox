@@ -206,8 +206,22 @@ static void set_prescaled_volume(void)
 #endif /* AUDIOHW_HAVE_MONO_VOLUME */
 
 #if defined(AUDIOHW_HAVE_LINEOUT)
-    /* For now, lineout stays at unity */
-    audiohw_set_lineout_volume(0, 0);
+
+    int l2 = volume, r2 = volume;
+
+    /* Balance the channels scaled by the current volume and min volume */
+    int balance2 = sound_prescaler.balance; /* percent */
+
+    if (balance2 > 0)
+    {
+        l2 -= (l2 - minvol) * balance2 / 100;
+    }
+    else if (balance2 < 0)
+    {
+        r2 += (r2 - minvol) * balance2 / 100;
+    }
+
+    audiohw_set_lineout_volume(l2, r2);
 #endif /* AUDIOHW_HAVE_LINEOUT */
 }
 #endif /* AUDIOIHW_HAVE_CLIPPING */

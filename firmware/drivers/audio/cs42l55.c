@@ -131,14 +131,14 @@ void audiohw_set_volume(int vol_l, int vol_r)
                     vol_r << HPBCTL_HPBVOL_SHIFT);
 }
 
-void audiohw_set_lineout_volume(int vol_l2, int vol_r2)
+void audiohw_set_lineout_volume(int vol_l, int vol_r)
 {
-    vol_l2 = vol_tenthdb2hw(vol_l2);
-    vol_r2 = vol_tenthdb2hw(vol_r2);
+    vol_l = vol_tenthdb2hw2(vol_l);
+    vol_r = vol_tenthdb2hw2(vol_r);
     cscodec_setbits(LINEACTL, LINEACTL_LINEAVOL_MASK | LINEACTL_LINEAMUTE,
-                    vol_l2 << LINEACTL_LINEAVOL_SHIFT);
+                    vol_l << LINEACTL_LINEAVOL_SHIFT);
     cscodec_setbits(LINEBCTL, LINEBCTL_LINEBVOL_MASK | LINEBCTL_LINEBMUTE,
-                    vol_r2 << LINEBCTL_LINEBVOL_SHIFT);
+                    vol_r << LINEBCTL_LINEBVOL_SHIFT);
 }
 
 void audiohw_enable_lineout(bool enable)
